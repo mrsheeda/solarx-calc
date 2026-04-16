@@ -8,14 +8,14 @@
         :root {
             --bg: #020617;
             --card-bg: #0f172a;
-            --primary: #f59e0b; /* Solar Orange */
-            --primary-glow: #fbbf24;
-            --accent: #38bdf8; /* Space Blue */
+            --solar-orange: #f59e0b;
+            --solar-glow: #fbbf24;
+            --space-blue: #38bdf8;
             --text: #f8fafc;
         }
 
         body { 
-            font-family: 'Inter', system-ui, sans-serif; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
             display: flex; 
@@ -23,75 +23,78 @@
             align-items: center; 
             min-height: 100vh; 
             margin: 0;
-            background: radial-gradient(circle at top right, #1e293b, #020617);
+            overflow-x: hidden;
+            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
         }
 
-        /* Animated Gradient Border */
-        .glow-wrapper {
+        /* The Outer Container (Does NOT rotate) */
+        .calculator-wrapper {
             position: relative;
-            padding: 3px;
+            width: 100%;
+            max-width: 450px;
+            padding: 4px; /* This creates the border thickness */
             border-radius: 24px;
-            background: conic-gradient(from 180deg at 50% 50%, var(--primary), var(--accent), var(--primary));
-            animation: spin 4s linear infinite;
-            max-width: 500px;
-            width: 90%;
+            overflow: hidden; /* Clips the spinning background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        @keyframes spin {
+        /* The Spinning Background Layer */
+        .calculator-wrapper::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: conic-gradient(
+                from 0deg, 
+                transparent, 
+                var(--solar-orange), 
+                var(--space-blue), 
+                var(--solar-orange), 
+                transparent
+            );
+            animation: rotateSolar 4s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotateSolar {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
+        /* The Actual Card (Static) */
         .card { 
-            background: var(--card-bg); 
-            padding: 40px; 
-            border-radius: 22px; 
             position: relative;
             z-index: 1;
-            /* Keeps the card content from rotating with the border */
-        }
-
-        .card-content {
-            transform: none; /* Stops the rotation of inner text */
-        }
-
-        /* To stop the content from spinning, we apply animation only to the wrapper's background */
-        .glow-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            background: inherit;
-            z-index: -1;
-        }
-        
-        /* Static Content fix */
-        .container {
-            background: var(--card-bg);
-            border-radius: 21px;
-            padding: 30px;
+            background: var(--card-bg); 
+            width: 100%;
+            padding: 35px; 
+            border-radius: 22px; 
+            box-sizing: border-box;
         }
 
         h2 { 
-            margin-top: 0; 
+            margin: 0 0 20px 0; 
             font-size: 1.8rem; 
             text-align: center; 
-            background: linear-gradient(to right, var(--primary), #fff);
+            background: linear-gradient(to right, var(--solar-orange), #fff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
+            font-weight: 800;
         }
 
         .stats-badge {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid rgba(245, 158, 11, 0.3);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(245, 158, 11, 0.2);
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 25px;
             font-size: 0.85rem;
+            backdrop-filter: blur(4px);
         }
 
-        label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 0.9rem; }
+        label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
         
         input { 
             width: 100%; 
@@ -100,65 +103,67 @@
             border: 1px solid #334155; 
             border-radius: 12px; 
             box-sizing: border-box; 
-            font-size: 20px; 
+            font-size: 22px; 
             background: #020617; 
-            color: var(--primary); 
-            font-weight: bold;
+            color: var(--solar-orange); 
+            font-weight: 800;
             outline: none;
             transition: 0.3s;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
+        input:focus { border-color: var(--solar-orange); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
 
         button { 
             width: 100%; 
             padding: 16px; 
-            background: var(--primary); 
+            background: var(--solar-orange); 
             color: #000; 
             border: none; 
             border-radius: 12px; 
             cursor: pointer; 
             font-size: 1rem; 
-            font-weight: 800; 
+            font-weight: 900; 
             text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
             transition: 0.2s;
         }
-        button:hover { background: var(--primary-glow); transform: scale(1.02); }
+        button:hover { background: var(--solar-glow); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
 
         .result-box {
             margin-top: 30px;
             padding: 20px;
-            background: rgba(255,255,255,0.03);
+            background: rgba(2, 6, 23, 0.5);
             border-radius: 16px;
             display: none;
-            border: 1px solid #334155;
+            border: 1px solid #1e293b;
         }
 
-        .token-amt { font-size: 2.5rem; color: var(--primary); font-weight: 900; margin: 10px 0; }
+        .token-label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
+        .token-amt { font-size: 2.5rem; color: var(--solar-orange); font-weight: 900; margin: 5px 0 15px 0; }
 
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; color: #64748b; padding-bottom: 10px; border-bottom: 1px solid #334155; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th { text-align: left; color: #64748b; padding-bottom: 10px; font-weight: 500; border-bottom: 1px solid #334155; }
         td { padding: 12px 0; border-bottom: 1px solid #1e293b; }
-        .val-col { color: var(--primary); font-weight: bold; text-align: right; }
+        .val-col { color: var(--solar-orange); font-weight: 800; text-align: right; }
     </style>
 </head>
 <body>
 
-<div class="glow-wrapper">
-    <div class="container">
-        <h2>SolarX Airdrop</h2>
+<div class="calculator-wrapper">
+    <div class="card">
+        <h2>SOLARX CALC</h2>
         
         <div class="stats-badge">
-            <div style="color: var(--primary); font-weight: bold; margin-bottom: 4px;">Season 1 Active</div>
-            Total Network Flares: 410,000,000,000
+            <div style="color: var(--solar-orange); font-weight: bold; margin-bottom: 4px;">Season 1 Pool</div>
+            Total Flares: 410,000,000,000
         </div>
 
-        <label>Enter Your Flare Points</label>
+        <label>Your Flare Points</label>
         <input type="text" id="flareInput" placeholder="0" oninput="formatNumber(this)" />
         
-        <button onclick="calculate()">View My Rewards</button>
+        <button onclick="calculate()">Calculate SLX</button>
 
         <div id="resultBox" class="result-box">
-            <div style="color: #94a3b8;">Estimated Allocation</div>
+            <div class="token-label">Estimated Reward</div>
             <div id="tokenOutput" class="token-amt">0 SLX</div>
             
             <table>
@@ -183,19 +188,24 @@
     function calculate() {
         const raw = document.getElementById('flareInput').value.replace(/,/g, '');
         const flares = parseFloat(raw);
-        if (!flares) return;
+        if (!flares || flares <= 0) {
+            alert("Please enter your flares!");
+            return;
+        }
 
+        // Calculation based on 8.5% of 1B supply distributed over 410B flares
         const tokens = (flares / 410000000000) * 85000000;
         
         document.getElementById('resultBox').style.display = "block";
         document.getElementById('tokenOutput').innerText = Math.round(tokens).toLocaleString() + " SLX";
 
-        const vals = [100, 200, 300, 400, 500];
+        const vals = [100, 150, 200, 300, 400, 500];
         let html = '';
         vals.forEach(v => {
-            const usd = tokens * (v * 1000000 / 1000000000);
+            const price = v * 1000000 / 1000000000; // FDV / Total Supply
+            const usd = tokens * price;
             html += `<tr>
-                <td>$${v}M Market Cap</td>
+                <td>$${v}M FDV</td>
                 <td class="val-col">$${usd.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
             </tr>`;
         });
