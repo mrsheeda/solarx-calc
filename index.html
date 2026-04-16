@@ -3,68 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolarX (SLX) Airdrop Calculator</title>
+    <title>SolarX (SLX) Season 1 Calculator</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background-color: #f4f7f6; color: #333; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
-        h2 { color: #2c3e50; margin-top: 0; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        button:hover { background-color: #219150; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #ecf0f1; }
-        .result-text { margin-top: 15px; font-weight: bold; font-size: 18px; color: #2980b9; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; background-color: #0f172a; color: #f8fafc; line-height: 1.6; }
+        .card { background: #1e293b; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-width: 650px; margin: auto; border: 1px solid #334155; }
+        h2 { color: #38bdf8; margin-top: 0; text-align: center; }
+        .info-box { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 25px; border-left: 4px solid #38bdf8; font-size: 0.95rem; }
+        .info-box p { margin: 5px 0; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #94a3b8; }
+        input { width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #475569; border-radius: 8px; box-sizing: border-box; font-size: 18px; background: #0f172a; color: white; font-weight: bold; }
+        input:focus { outline: 2px solid #38bdf8; border-color: transparent; }
+        button { width: 100%; padding: 14px; background-color: #38bdf8; color: #0f172a; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 800; text-transform: uppercase; transition: transform 0.2s, background 0.2s; }
+        button:hover { background-color: #7dd3fc; transform: translateY(-1px); }
+        .result-container { margin-top: 25px; text-align: center; padding: 20px; background: #0f172a; border-radius: 12px; display: none; }
+        .token-count { font-size: 2.2rem; font-weight: 800; color: #22c55e; margin: 10px 0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 25px; display: none; font-size: 0.9rem; }
+        th, td { border: 1px solid #334155; padding: 14px; text-align: center; }
+        th { background-color: #1e293b; color: #94a3b8; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+        tr:nth-child(even) { background-color: #1e293b; }
+        .usd-val { color: #fbbf24; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2>SLX Airdrop Estimator</h2>
-    <p>Enter your total Flare points to calculate your SLX tokens and potential value.</p>
+    <h2>SLX Airdrop Value Estimator</h2>
     
-    <input type="number" id="flarePoints" placeholder="e.g. 17129000" />
-    <button onclick="calculateAirdrop()">Calculate Value</button>
+    <div class="info-box">
+        <p><strong>Season 1 Stats:</strong></p>
+        <p>• Total Community Flares: <strong>410,000,000,000</strong></p>
+        <p>• Total SLX Supply: 1,000,000,000</p>
+        <p>• Allocation: Based on 8.5% Airdrop Pool</p>
+    </div>
 
-    <div id="tokenResult" class="result-text"></div>
+    <label for="flareInput">Enter Your Flare Points</label>
+    <input type="text" id="flareInput" placeholder="Ex: 17,129,000" oninput="formatNumber(this)" />
+    
+    <button onclick="calculateAirdrop()">Calculate My Airdrop</button>
 
-    <table id="valuationTable">
-        <thead>
-            <tr>
-                <th>FDV Valuation ($)</th>
-                <th>Price per SLX</th>
-                <th>Airdrop Value (USD)</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            </tbody>
-    </table>
+    <div id="resultArea" class="result-container">
+        <div style="color: #94a3b8; font-size: 0.9rem;">Estimated Reward:</div>
+        <div id="tokenResult" class="token-count">0 SLX</div>
+        
+        <table id="valuationTable">
+            <thead>
+                <tr>
+                    <th>FDV Valuation</th>
+                    <th>SLX Price</th>
+                    <th>Value (USD)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
 </div>
 
 <script>
+    // Automatically adds commas as the user types
+    function formatNumber(input) {
+        // Remove all non-digits
+        let value = input.value.replace(/\D/g, '');
+        // Add commas every 3 digits
+        input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     function calculateAirdrop() {
-        const flares = document.getElementById('flarePoints').value;
+        // Get value and remove commas to turn back into a raw number for math
+        const rawValue = document.getElementById('flareInput').value.replace(/,/g, '');
+        const flares = parseFloat(rawValue);
+        
         const totalFlares = 410000000000;
-        const airdropPool = 85000000; // 8.5% of 1B
-        const totalSupply = 1000000000; // 1B FDV base
+        const airdropPool = 85000000; 
+        const totalSupply = 1000000000;
 
         if (!flares || flares <= 0) {
-            alert("Please enter a valid amount of Flares.");
+            alert("Please enter your Flare points.");
             return;
         }
 
-        // Calculate SLX Tokens
         const slxTokens = (flares / totalFlares) * airdropPool;
         
-        document.getElementById('tokenResult').innerText = `Estimated Reward: ${slxTokens.toLocaleString(undefined, {maximumFractionDigits: 2})} SLX`;
+        document.getElementById('resultArea').style.display = "block";
+        document.getElementById('tokenResult').innerText = `${slxTokens.toLocaleString(undefined, {maximumFractionDigits: 0})} SLX`;
 
-        // Valuations to check
         const valuations = [100000000, 150000000, 200000000, 300000000, 400000000, 500000000];
         const tableBody = document.getElementById('tableBody');
         const table = document.getElementById('valuationTable');
         
-        tableBody.innerHTML = ""; // Clear old data
-        table.style.display = "table"; // Show table
+        tableBody.innerHTML = ""; 
+        table.style.display = "table";
 
         valuations.forEach(fdv => {
             const pricePerToken = fdv / totalSupply;
@@ -72,8 +99,8 @@
 
             const row = `<tr>
                 <td>$${(fdv / 1000000).toFixed(0)}M</td>
-                <td>$${pricePerToken.toFixed(3)}</td>
-                <td><strong>$${totalValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+                <td>$${pricePerToken.toFixed(2)}</td>
+                <td class="usd-val">$${totalValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
             </tr>`;
             tableBody.innerHTML += row;
         });
