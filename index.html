@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SolarX Season 1 Calculator</title>
+    <title>Solstice (SLX) Season 1 Calculator</title>
     <style>
         :root {
-            --bg: #020617;
-            --card-bg: #0f172a;
-            --solar-orange: #f59e0b;
-            --solar-glow: #fbbf24;
-            --space-blue: #38bdf8;
-            --text: #f8fafc;
+            --bg: #030712;
+            --card-bg: #111827;
+            --solstice-blue: #3b82f6; /* Electric Blue */
+            --solstice-glow: #60a5fa;
+            --accent: #10b981; /* Success Green */
+            --text: #f9fafb;
         }
 
         body { 
@@ -23,25 +23,23 @@
             align-items: center; 
             min-height: 100vh; 
             margin: 0;
-            overflow-x: hidden;
-            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            background: radial-gradient(circle at center, #1e1b4b 0%, #030712 100%);
         }
 
-        /* The Outer Container (Does NOT rotate) */
-        .calculator-wrapper {
+        /* Border Animation Wrapper */
+        .glow-wrapper {
             position: relative;
             width: 100%;
-            max-width: 450px;
-            padding: 4px; /* This creates the border thickness */
+            max-width: 460px;
+            padding: 3px;
             border-radius: 24px;
-            overflow: hidden; /* Clips the spinning background */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* The Spinning Background Layer */
-        .calculator-wrapper::before {
+        .glow-wrapper::before {
             content: '';
             position: absolute;
             width: 150%;
@@ -49,21 +47,20 @@
             background: conic-gradient(
                 from 0deg, 
                 transparent, 
-                var(--solar-orange), 
-                var(--space-blue), 
-                var(--solar-orange), 
+                var(--solstice-blue), 
+                #818cf8, 
+                var(--solstice-blue), 
                 transparent
             );
-            animation: rotateSolar 4s linear infinite;
+            animation: rotateGlow 5s linear infinite;
             z-index: 0;
         }
 
-        @keyframes rotateSolar {
+        @keyframes rotateGlow {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
-        /* The Actual Card (Static) */
         .card { 
             position: relative;
             z-index: 1;
@@ -72,95 +69,111 @@
             padding: 35px; 
             border-radius: 22px; 
             box-sizing: border-box;
+            box-shadow: inset 0 0 20px rgba(59, 130, 246, 0.1);
         }
 
         h2 { 
-            margin: 0 0 20px 0; 
+            margin: 0 0 10px 0; 
             font-size: 1.8rem; 
             text-align: center; 
-            background: linear-gradient(to right, var(--solar-orange), #fff);
+            background: linear-gradient(to right, #fff, var(--solstice-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 800;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .stats-badge {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            padding: 15px;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 16px;
             border-radius: 12px;
             margin-bottom: 25px;
             font-size: 0.85rem;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
         }
 
-        label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .stats-badge div { margin-bottom: 4px; }
+        .highlight { color: var(--solstice-blue); font-weight: bold; }
+
+        label { display: block; margin-bottom: 10px; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
         
         input { 
             width: 100%; 
-            padding: 16px; 
+            padding: 18px; 
             margin-bottom: 20px; 
-            border: 1px solid #334155; 
+            border: 1px solid #1f2937; 
             border-radius: 12px; 
             box-sizing: border-box; 
-            font-size: 22px; 
-            background: #020617; 
-            color: var(--solar-orange); 
+            font-size: 24px; 
+            background: #030712; 
+            color: #fff; 
             font-weight: 800;
             outline: none;
-            transition: 0.3s;
+            transition: all 0.3s;
         }
-        input:focus { border-color: var(--solar-orange); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
+        input:focus { border-color: var(--solstice-blue); box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
 
         button { 
             width: 100%; 
-            padding: 16px; 
-            background: var(--solar-orange); 
-            color: #000; 
+            padding: 18px; 
+            background: var(--solstice-blue); 
+            color: #fff; 
             border: none; 
             border-radius: 12px; 
             cursor: pointer; 
             font-size: 1rem; 
-            font-weight: 900; 
+            font-weight: 800; 
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
             transition: 0.2s;
+            letter-spacing: 1px;
         }
-        button:hover { background: var(--solar-glow); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+        button:hover { background: var(--solstice-glow); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
 
         .result-box {
-            margin-top: 30px;
-            padding: 20px;
-            background: rgba(2, 6, 23, 0.5);
+            margin-top: 35px;
+            padding: 25px;
+            background: rgba(3, 7, 18, 0.8);
             border-radius: 16px;
             display: none;
-            border: 1px solid #1e293b;
+            border: 1px solid #1f2937;
         }
 
-        .token-label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; }
-        .token-amt { font-size: 2.5rem; color: var(--solar-orange); font-weight: 900; margin: 5px 0 15px 0; }
+        .token-label { color: #94a3b8; font-size: 0.8rem; margin-bottom: 5px; }
+        .token-amt { font-size: 2.8rem; color: var(--accent); font-weight: 900; margin-bottom: 20px; text-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
 
-        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        th { text-align: left; color: #64748b; padding-bottom: 10px; font-weight: 500; border-bottom: 1px solid #334155; }
-        td { padding: 12px 0; border-bottom: 1px solid #1e293b; }
-        .val-col { color: var(--solar-orange); font-weight: 800; text-align: right; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; color: #6b7280; padding-bottom: 12px; font-weight: 600; border-bottom: 1px solid #1f2937; }
+        td { padding: 14px 0; border-bottom: 1px solid #111827; }
+        .val-col { color: #fff; font-weight: 800; text-align: right; }
     </style>
 </head>
 <body>
 
-<div class="calculator-wrapper">
+<div class="glow-wrapper">
     <div class="card">
-        <h2>SOLARX CALC</h2>
+        <h2>SOLSTICE</h2>
+        <div class="subtitle">Airdrop Estimation</div>
         
         <div class="stats-badge">
-            <div style="color: var(--solar-orange); font-weight: bold; margin-bottom: 4px;">Season 1 Pool</div>
-            Total Flares: 410,000,000,000
+            <div><span class="highlight">Season 1:</span> Allocation Active</div>
+            <div><span class="highlight">Total Flares:</span> 410,000,000,000</div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 5px;">Based on 8.5% total supply airdrop pool.</div>
         </div>
 
-        <label>Your Flare Points</label>
+        <label>Your Season 1 Flares</label>
         <input type="text" id="flareInput" placeholder="0" oninput="formatNumber(this)" />
         
-        <button onclick="calculate()">Calculate SLX</button>
+        <button onclick="calculate()">Show My Allocation</button>
 
         <div id="resultBox" class="result-box">
             <div class="token-label">Estimated Reward</div>
@@ -169,7 +182,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>FDV</th>
+                        <th>FDV Valuation</th>
                         <th style="text-align: right;">USD Value</th>
                     </tr>
                 </thead>
@@ -188,25 +201,25 @@
     function calculate() {
         const raw = document.getElementById('flareInput').value.replace(/,/g, '');
         const flares = parseFloat(raw);
-        if (!flares || flares <= 0) {
-            alert("Please enter your flares!");
-            return;
-        }
+        if (!flares || flares <= 0) return;
 
-        // Calculation based on 8.5% of 1B supply distributed over 410B flares
+        // SLX Allocation Logic
+        // Total Supply: 1,000,000,000
+        // Airdrop Pool: 85,000,000 (8.5%)
+        // Global Flares: 410,000,000,000
         const tokens = (flares / 410000000000) * 85000000;
         
         document.getElementById('resultBox').style.display = "block";
         document.getElementById('tokenOutput').innerText = Math.round(tokens).toLocaleString() + " SLX";
 
-        const vals = [100, 150, 200, 300, 400, 500];
+        const valuations = [100, 150, 200, 300, 400, 500];
         let html = '';
-        vals.forEach(v => {
-            const price = v * 1000000 / 1000000000; // FDV / Total Supply
-            const usd = tokens * price;
+        valuations.forEach(v => {
+            const price = (v * 1000000) / 1000000000;
+            const usdValue = tokens * price;
             html += `<tr>
-                <td>$${v}M FDV</td>
-                <td class="val-col">$${usd.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                <td>$${v}M Market Cap</td>
+                <td class="val-col">$${usdValue.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
             </tr>`;
         });
         document.getElementById('tableBody').innerHTML = html;
