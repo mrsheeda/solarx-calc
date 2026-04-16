@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarX (SLX) Airdrop Calculator</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-width: 600px; margin: auto; }
+        h2 { color: #2c3e50; margin-top: 0; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #219150; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; display: none; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #ecf0f1; }
+        .result-text { margin-top: 15px; font-weight: bold; font-size: 18px; color: #2980b9; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>SLX Airdrop Estimator</h2>
+    <p>Enter your total Flare points to calculate your SLX tokens and potential value.</p>
+    
+    <input type="number" id="flarePoints" placeholder="e.g. 17129000" />
+    <button onclick="calculateAirdrop()">Calculate Value</button>
+
+    <div id="tokenResult" class="result-text"></div>
+
+    <table id="valuationTable">
+        <thead>
+            <tr>
+                <th>FDV Valuation ($)</th>
+                <th>Price per SLX</th>
+                <th>Airdrop Value (USD)</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            </tbody>
+    </table>
+</div>
+
+<script>
+    function calculateAirdrop() {
+        const flares = document.getElementById('flarePoints').value;
+        const totalFlares = 410000000000;
+        const airdropPool = 85000000; // 8.5% of 1B
+        const totalSupply = 1000000000; // 1B FDV base
+
+        if (!flares || flares <= 0) {
+            alert("Please enter a valid amount of Flares.");
+            return;
+        }
+
+        // Calculate SLX Tokens
+        const slxTokens = (flares / totalFlares) * airdropPool;
+        
+        document.getElementById('tokenResult').innerText = `Estimated Reward: ${slxTokens.toLocaleString(undefined, {maximumFractionDigits: 2})} SLX`;
+
+        // Valuations to check
+        const valuations = [100000000, 150000000, 200000000, 300000000, 400000000, 500000000];
+        const tableBody = document.getElementById('tableBody');
+        const table = document.getElementById('valuationTable');
+        
+        tableBody.innerHTML = ""; // Clear old data
+        table.style.display = "table"; // Show table
+
+        valuations.forEach(fdv => {
+            const pricePerToken = fdv / totalSupply;
+            const totalValue = slxTokens * pricePerToken;
+
+            const row = `<tr>
+                <td>$${(fdv / 1000000).toFixed(0)}M</td>
+                <td>$${pricePerToken.toFixed(3)}</td>
+                <td><strong>$${totalValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+</script>
+
+</body>
+</html>
